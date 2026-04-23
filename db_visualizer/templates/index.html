@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Visualizer - Real Time</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1e1e2f; color: #fff; padding: 20px; }
+        h1 { text-align: center; color: #00e5ff; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 0.9rem; }
+        .table-container { margin-bottom: 40px; background: #2a2a40; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        h2 { color: #ff007f; border-bottom: 2px solid #ff007f; padding-bottom: 10px; display: inline-block; margin-top: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #444; }
+        th { background: #33334d; color: #00e5ff; }
+        tr:hover { background: #3a3a5c; }
+        .status { text-align: center; margin-bottom: 20px; font-weight: bold; padding: 10px; border-radius: 5px; }
+        .status.connected { background: rgba(0, 255, 0, 0.1); color: #00ff00; border: 1px solid #00ff00; }
+        .status.error { background: rgba(255, 0, 0, 0.1); color: #ff4444; border: 1px solid #ff4444; }
+        .status.connecting { background: rgba(255, 255, 0, 0.1); color: #ffff00; border: 1px solid #ffff00; }
+        .clear-btn { display: block; margin: 20px auto; padding: 10px 20px; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.3s; }
+        .clear-btn:hover { background: #cc0000; }
+    </style>
+</head>
+<body>
+    <h1>Gym Management - Database Visualizer</h1>
+    <p class="subtitle">Polling Local MySQL Database every 2 seconds...</p>
+    
+    <button id="clear-db-btn" class="clear-btn">Clear All Data</button>
+    <div id="status" class="status connecting">Connecting to Database...</div>
+    <div id="tables-container"></div>
+
+    <script>
+        async function fetchDbStatus() {
+            try {
+                const response = await fetch('/api/db_status');
+                if (!response.ok) throw new Error('API Response not OK');
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                document.getElementById('status').innerText = 'Connected - Live Updating...';
+                document.getElementById('status').className = 'status connected';
+                
+                renderTables(data);
+            } catch (error) {
+                document.getElementById('status').innerText = 'Database Disconnected or MySQL Unavailable: ' + error.message;
+                document.getElementById('status').className = 'status error';
+            }
+        }
+
+        function renderTables(data) {
+            const container = document.getElementById('tables-container');
+            container.innerHTML = ''; // Clear current to re-render fresh
+
+            for (const [tableName, rows] of Object.entries(data)) {
+                const tableDiv = document.createElement('div');
+                tableDiv.className = 'table-container';
+                
+                let html = `<h2>Table: ${tableName} <span style="font-size:14px; color:#aaa">(${rows.length} rows)</span></h2>`;
+                
+                if (rows.length === 0) {
+                    html += `<p style="color: #bbb; font-style: italic;">No rows found in this table.</p>`;
+                } else {
+                    const columns = Object.keys(rows[0]);
+                    html += `<table><thead><tr>`;
+                    columns.forEach(col => html += `<th>${col}</th>`);
+                    html += `</tr></thead><tbody>`;
+                    
+                    rows.forEach(row => {
+                        html += `<tr>`;
+                        columns.forEach(col => {
+                            let val = row[col];
+                            if (val === null) val = '<span style="color:#666">NULL</span>';
+                            // Date formatting for readability if it's a timestamp string
+                            else if (typeof val === 'string' && val.match(/^\w{3}, \d{2} \w{3} \d{4} \d{2}:\d{2}:\d{2} GMT$/)) {
+                                val = new Date(val).toISOString().split('T')[0];
+                            }
+                            html += `<td>${val}</td>`;
+                        });
+                        html += `</tr>`;
+                    });
+                    
+                    html += `</tbody></table>`;
+                }
+                
+                tableDiv.innerHTML = html;
+                container.appendChild(tableDiv);
+            }
+        }
+
+        document.getElementById('clear-db-btn').addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to PERMANENTLY clear all data from the database? This cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/clear_db', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert('Error clearing database: ' + data.error);
+                } else {
+                    alert('Database cleared successfully!');
+                    fetchDbStatus(); // Refresh immediately
+                }
+            } catch (error) {
+                alert('Connection error: ' + error.message);
+            }
+        });
+
+        // Fetch immediately, then poll every 2 seconds
+        fetchDbStatus();
+        setInterval(fetchDbStatus, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitCore Gym Management</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon"><i class="ph-fill ph-barbell"></i></div>
+                <h2>FitCore</h2>
+                <button class="close-sidebar" id="closeSidebar"><i class="ph ph-x"></i></button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <p class="nav-label">MAIN MENU</p>
+                <a href="#" class="nav-item active" data-view="dashboard">
+                    <i class="ph ph-squares-four"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-view="members">
+                    <i class="ph ph-users"></i>
+                    <span>Members</span>
+                </a>
+                <a href="#" class="nav-item" data-view="trainers">
+                    <i class="ph ph-user-circle-gear"></i>
+                    <span>Trainers</span>
+                </a>
+                <a href="#" class="nav-item" data-view="assignments">
+                    <i class="ph ph-users-three"></i>
+                    <span>Training Assign</span>
+                </a>
+                
+                <p class="nav-label mt-4">MANAGEMENT</p>
+                <a href="#" class="nav-item" data-view="plans">
+                    <i class="ph ph-clipboard-text"></i>
+                    <span>Plans</span>
+                </a>
+                <a href="#" class="nav-item" data-view="accounts">
+                    <i class="ph ph-identification-badge"></i>
+                    <span>Accounts</span>
+                </a>
+                <a href="#" class="nav-item" data-view="payments">
+                    <i class="ph ph-money"></i>
+                    <span>Payments</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="logout-btn">
+                    <i class="ph ph-sign-out"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="ph ph-list"></i>
+                    </button>
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                </div>
+                
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <button class="notification-btn">
+                        <i class="ph ph-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <div class="profile-dropdown">
+                        <img src="https://api.dicebear.com/7.x/initials/svg?seed=Admin&backgroundColor=7e22ce" alt="Admin" class="avatar">
+                        <div class="profile-info">
+                            <span class="name">Admin User</span>
+                            <span class="role">Manager</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Views Container -->
+            <div class="views-container">
+                <!-- Dashboard View -->
+                <section id="dashboard" class="view-section active">
+                    <div class="grid grid-cols-4 mb-6">
+                        <div class="card stat-card">
+                            <div class="stat-icon primary"><i class="ph-fill ph-users"></i></div>
+                            <div class="stat-details">
+                                <h3>Total Members</h3>
+                                <p id="stat-members">0</p>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon success"><i class="ph-fill ph-user-circle-gear"></i></div>
+                            <div class="stat-details">
+                                <h3>Active Trainers</h3>
+                                <p id="stat-trainers">0</p>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon warning"><i class="ph-fill ph-clipboard-text"></i></div>
+                            <div class="stat-details">
+                                <h3>Active Memberships</h3>
+                                <p id="stat-memberships">0</p>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon info"><i class="ph-fill ph-currency-dollar"></i></div>
+                            <div class="stat-details">
+                                <h3>Total Revenue</h3>
+                                <p id="stat-revenue">$0</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Members View -->
+                <section id="members" class="view-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Members Management</h2>
+                        <button class="btn btn-primary" onclick="toggleForm('member-form-container')"><i class="ph ph-plus"></i> Add Member</button>
+                    </div>
+                    
+                    <div id="member-form-container" class="card mb-6" style="display:none;">
+                        <h3 class="font-semibold mb-4" style="font-size: 1.1rem; color: var(--secondary-color);">Add New Member</h3>
+                        <form id="member-form" class="grid grid-cols-3 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input type="text" id="member-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Gender</label>
+                                <select id="member-gender" class="form-control" required>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone No.</label>
+                                <input type="text" id="member-phone" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="grid-column: span 3; display: flex; justify-content: flex-end; gap: 1rem;">
+                                <button type="button" class="btn btn-secondary" onclick="toggleForm('member-form-container')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Member</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table id="members-table">
+                                <thead><tr><th>Member ID</th><th>Name</th><th>Gender</th><th>Phone No.</th><th>Actions</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Trainers View -->
+                <section id="trainers" class="view-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Trainers Management</h2>
+                        <button class="btn btn-primary" onclick="toggleForm('trainer-form-container')"><i class="ph ph-plus"></i> Add Trainer</button>
+                    </div>
+                    
+                    <div id="trainer-form-container" class="card mb-6" style="display:none;">
+                        <h3 class="font-semibold mb-4" style="font-size: 1.1rem; color: var(--secondary-color);">Add New Trainer</h3>
+                        <form id="trainer-form" class="grid grid-cols-3 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input type="text" id="trainer-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone No.</label>
+                                <input type="text" id="trainer-phone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Specialization</label>
+                                <input type="text" id="trainer-spec" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="grid-column: span 3; display: flex; justify-content: flex-end; gap: 1rem;">
+                                <button type="button" class="btn btn-secondary" onclick="toggleForm('trainer-form-container')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Trainer</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table id="trainers-table">
+                                <thead><tr><th>Trainer ID</th><th>Name</th><th>Phone No.</th><th>Specialization</th><th>Actions</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Assignments View -->
+                <section id="assignments" class="view-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Training Assignments</h2>
+                        <button class="btn btn-primary" onclick="toggleForm('assignment-form-container')"><i class="ph ph-plus"></i> Assign Trainer</button>
+                    </div>
+                    
+                    <div id="assignment-form-container" class="card mb-6" style="display:none;">
+                        <h3 class="font-semibold mb-4" style="font-size: 1.1rem; color: var(--secondary-color);">New Assignment</h3>
+                        <form id="assignment-form" class="grid grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Trainer</label>
+                                <select id="assign-trainer" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Member</label>
+                                <select id="assign-member" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" id="assign-start" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">End Date</label>
+                                <input type="date" id="assign-end" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2; display: flex; justify-content: flex-end; gap: 1rem;">
+                                <button type="button" class="btn btn-secondary" onclick="toggleForm('assignment-form-container')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Assignment</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table id="assignments-table">
+                                <thead><tr><th>Trainer</th><th>Member</th><th>Start Date</th><th>End Date</th><th>Actions</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Plans View -->
+                <section id="plans" class="view-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Membership Plans</h2>
+                        <button class="btn btn-primary" onclick="toggleForm('plan-form-container')"><i class="ph ph-plus"></i> Add Plan</button>
+                    </div>
+                    
+                    <div id="plan-form-container" class="card mb-6" style="display:none;">
+                        <h3 class="font-semibold mb-4" style="font-size: 1.1rem; color: var(--secondary-color);">Add New Plan</h3>
+                        <form id="plan-form" class="grid grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Plan Name</label>
+                                <input type="text" id="plan-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Duration (Months)</label>
+                                <input type="number" id="plan-duration" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Fee ($)</label>
+                                <input type="number" id="plan-fee" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Facilities</label>
+                                <input type="text" id="plan-facilities" class="form-control" placeholder="e.g. Gym, Pool" required>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2; display: flex; justify-content: flex-end; gap: 1rem;">
+                                <button type="button" class="btn btn-secondary" onclick="toggleForm('plan-form-container')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Plan</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="grid grid-cols-3" id="plans-container">
+                        <!-- Plan cards dynamically rendered here -->
+                    </div>
+                </section>
+
+                <!-- Accounts View -->
+                <section id="accounts" class="view-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Membership Accounts</h2>
+                        <button class="btn btn-primary" onclick="toggleForm('account-form-container')"><i class="ph ph-plus"></i> Activate Membership</button>
+                    </div>
+                    
+                    <div id="account-form-container" class="card mb-6" style="display:none;">
+                        <h3 class="font-semibold mb-4" style="font-size: 1.1rem; color: var(--secondary-color);">Activate/Renew Account</h3>
+                        <form id="account-form" class="grid grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Member</label>
+                                <select id="account-member" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Plan</label>
+                                <select id="account-plan" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Activation Date</label>
+                                <input type="date" id="account-activation" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2; display: flex; justify-content: flex-end; gap: 1rem;">
+                                <button type="button" class="btn btn-secondary" onclick="toggleForm('account-form-container')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Activate</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table id="accounts-table">
+                                <thead><tr><th>Account No</th><th>Member</th><th>Plan</th><th>Activation Date</th><th>Expiry Date</th><th>Status</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Payments View -->
+                <section id="payments" class="view-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Payments</h2>
+                        <button class="btn btn-primary" onclick="toggleForm('payment-form-container')"><i class="ph ph-plus"></i> Record Payment</button>
+                    </div>
+                    
+                    <div id="payment-form-container" class="card mb-6" style="display:none;">
+                        <h3 class="font-semibold mb-4" style="font-size: 1.1rem; color: var(--secondary-color);">Record a Payment</h3>
+                        <form id="payment-form" class="grid grid-cols-3 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Member</label>
+                                <select id="payment-member" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Amount ($)</label>
+                                <input type="number" id="payment-amount" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mode</label>
+                                <select id="payment-mode" class="form-control" required>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Card">Card</option>
+                                    <option value="UPI">UPI</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date</label>
+                                <input type="date" id="payment-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select id="payment-status" class="form-control" required>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="grid-column: span 3; display: flex; justify-content: flex-end; gap: 1rem;">
+                                <button type="button" class="btn btn-secondary" onclick="toggleForm('payment-form-container')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Record</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table id="payments-table">
+                                <thead><tr><th>Payment ID</th><th>Member</th><th>Amount</th><th>Date</th><th>Mode</th><th>Status</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js?v=0921"></script>
+</body>
+</html>
